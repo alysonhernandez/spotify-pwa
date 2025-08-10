@@ -1,5 +1,5 @@
 const clientId = "46bcebb835964614b78bc14ff6630d1d"; 
-const redirectUri = "https://alysonhernandez.github.io/spotify-pwa/";
+const redirectUri = "https://alysonhernandez.github.io/spotify-pwa/callback";
 const scopes = [
   "user-read-playback-state",
   "user-modify-playback-state"
@@ -32,4 +32,5 @@ document.getElementById("playPauseBtn").addEventListener("click", () => {
     console.log("Toggled play/pause");
   });
 });
+
 
