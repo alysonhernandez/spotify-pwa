@@ -1,5 +1,5 @@
 const clientId = "46bcebb835964614b78bc14ff6630d1d"; 
-const redirectUri = "https://alysonhernandez.github.io/spotify-pwa/callback";
+const redirectUri = "https://alysonhernandez.github.io/spotify-pwa/callback.html";
 const scopes = [
   "user-read-playback-state",
   "user-modify-playback-state"
