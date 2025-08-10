@@ -7,6 +7,7 @@ const scopes = [
 
 document.getElementById("loginBtn").addEventListener("click", () => {
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(' '))}`;
+  console.log(authUrl);
   window.location.href = authUrl;
 });
 
