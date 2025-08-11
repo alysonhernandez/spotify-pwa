@@ -69,3 +69,54 @@ document.getElementById("playlistDropdown").addEventListener("change", () => {
   .catch(err => console.error("Error starting playlist:", err));
 });
 
+document.querySelectorAll("#addToPlaylist button").forEach(button => {
+  button.addEventListener("click", async (e) => {
+    const token = localStorage.getItem("spotifyToken");
+    if (!token) return alert("Login first");
+
+    const action = e.target.value;
+
+    const nowPlayingRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+      headers: { "Authorization": "Bearer " + token }
+    });
+    const nowPlayingData = await nowPlayingRes.json();
+
+    if (!nowPlayingData.item) return alert("No track is currently playing");
+
+    const trackId = nowPlayingData.item.id;
+    const trackUri = nowPlayingData.item.uri;
+
+    if (action === "liked") {
+      await fetch(`https://api.spotify.com/v1/me/tracks?ids=${trackId}`, {
+        method: "PUT",
+        headers: { "Authorization": "Bearer " + token }
+      });
+    } else {
+      await fetch(`https://api.spotify.com/v1/playlists/${action}/tracks`, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ uris: [trackUri] })
+      });
+    }
+  });
+  
+});
+
+let repeatState = "off";
+
+document.getElementById("repeatBtn").addEventListener("click", () => {
+  const token = localStorage.getItem("spotifyToken");
+  if (!token) return alert("Login first");
+
+  repeatState = repeatState === "off" ? "track" : "off";
+
+  fetch(`https://api.spotify.com/v1/me/player/repeat?state=${repeatState}`, {
+    method: "PUT",
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(() => console.log(`Repeat mode set to: ${repeatState}`))
+  .catch(err => console.error("Repeat toggle error:", err));
+});
