@@ -13,7 +13,45 @@
   <button id="playPauseBtn">Play/Pause</button>
   <button id="skipForwardBtn">Next</button>
   <button id="skipPreviousBtn">Previous</button>
-  <div id="trackInfo"></div>
+
+  <select id="playlistDropdown">
+    <option value="1irlz0oEAfQeBNMNlqrKT0">GOAT STATUS</option>
+    <option value="37i9dQZF1E8UxZUj3ORCdx">JOKER Radio</option>
+    <option value="37i9dQZF1EQqedj0y9Uwvu">2010s Mix</option>
+    <option value="37i9dQZF1EQnqst5TRi17F">HipHop Mix</option>
+  </select>
+
+
+  <div id="trackInfo">
+    <img id="albumCover" src="" alt="Album cover" width="200">
+    <p id="trackName">Track: </p>
+    <p id="artistName">Artist: </p>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("spotifyToken");
+    if (!token) return alert("Login first");
+
+    fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+      method: "GET",
+      headers: { "Authorization": "Bearer " + token }
+    })
+    .then(res => {
+      if (res.status === 204) throw new Error("No track currently playing");
+      return res.json();
+    })
+    .then(data => {
+      const track = data.item;
+      const trackName = track.name;
+      const artistName = track.artists.map(artist => artist.name).join(", ");
+      const albumCoverUrl = track.album.images[0].url;
+
+      document.getElementById("trackName").textContent = `Track: ${trackName}`;
+      document.getElementById("artistName").textContent = `Artist: ${artistName}`;
+      document.getElementById("albumCover").src = albumCoverUrl;
+    })
+    .catch(err => console.error("Error fetching track info:", err));
+  </script>
 
   <script src="script/auth.js"></script>
   <script src="script/player.js"></script>

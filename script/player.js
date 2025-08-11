@@ -48,3 +48,23 @@ document.getElementById("skipPreviousBtn").addEventListener("click", () => {
   .then(() => console.log("Song Skipped Previous"))
   .catch(err => console.error("Skip Previous error:", err));
 });
+
+document.getElementById("playlistDropdown").addEventListener("change", () => {
+  const token = localStorage.getItem("spotifyToken");
+  if (!token) return alert("Login first");
+
+  const playlistId = document.getElementById("playlistDropdown").value;
+
+  fetch("https://api.spotify.com/v1/me/player/play", {
+    method: "PUT",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      context_uri: `spotify:playlist:${playlistId}`
+    })
+  })
+  .then(() => console.log("Playlist started"))
+  .catch(err => console.error("Error starting playlist:", err));
+});
