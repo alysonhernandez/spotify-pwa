@@ -4,7 +4,7 @@ export function updateTrackInfo() {
   const token = localStorage.getItem("spotifyToken");
   if (!token) return alert("Login first");
 
-  fetch("https://api.spotify.com/v1/me/player?market=from_token", {
+  fetch("https://api.spotify.com/v1/me/player/currently-playing?market=from_token", {
     method: "GET",
     headers: { "Authorization": "Bearer " + token }
   })
@@ -19,22 +19,25 @@ export function updateTrackInfo() {
     const artistName = track.artists.map(a => a.name).join(", ");
     const albumCoverUrl = track.album.images[0].url;
 
-    const img = new Image();
-    img.onload = () => {
-      document.getElementById("albumCover").src = img.src;
-    };
-    img.src = albumCoverUrl;
+    const albumCover = document.getElementById("albumCover");
+    if (albumCover) albumCover.src = albumCoverUrl;
 
     document.getElementById("trackName").textContent = `Track: ${trackName}`;
     document.getElementById("artistName").textContent = `Artist: ${artistName}`;
+
+    console.log(`[${new Date().toLocaleTimeString()}] Updated to: ${trackName} by ${artistName}`);
   })
-  .catch(err => console.error("Track fetch error:", err));
+  .catch(err => {
+     document.getElementById("trackName").textContent = "No track playing";
+     document.getElementById("artistName").textContent = "";
+     console.error("Track fetch error:", err);
+  });
 }
 
 export function startTrackPolling() {
   function poll() {
     updateTrackInfo();
-    setTimeout(poll, 3000);
+    setTimeout(poll, 1500);
   }
   poll();
 }
