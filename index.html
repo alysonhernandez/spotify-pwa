@@ -21,36 +21,17 @@
     <option value="37i9dQZF1EQnqst5TRi17F">HipHop Mix</option>
   </select>
 
-
   <div id="trackInfo">
     <img id="albumCover" src="" alt="Album cover" width="200">
     <p id="trackName">Track: </p>
     <p id="artistName">Artist: </p>
   </div>
 
-  <script>
-    const token = localStorage.getItem("spotifyToken");
-    if (!token) return alert("Login first");
+  <script type="module">
+    import { updateTrackInfo } from './script/player.js';
 
-    fetch("https://api.spotify.com/v1/me/player/currently-playing", {
-      method: "GET",
-      headers: { "Authorization": "Bearer " + token }
-    })
-    .then(res => {
-      if (res.status === 204) throw new Error("No track currently playing");
-      return res.json();
-    })
-    .then(data => {
-      const track = data.item;
-      const trackName = track.name;
-      const artistName = track.artists.map(artist => artist.name).join(", ");
-      const albumCoverUrl = track.album.images[0].url;
-
-      document.getElementById("trackName").textContent = `Track: ${trackName}`;
-      document.getElementById("artistName").textContent = `Artist: ${artistName}`;
-      document.getElementById("albumCover").src = albumCoverUrl;
-    })
-    .catch(err => console.error("Error fetching track info:", err));
+    updateTrackInfo(); 
+    setInterval(updateTrackInfo, 10000); 
   </script>
 
   <script src="script/auth.js"></script>
